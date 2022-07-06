@@ -1,0 +1,13 @@
+table {
+  border-collapse: collapse;
+}
+
+td,
+th {
+  padding: 5px;
+  border: solid black 1px;
+}
+
+.newSession {
+  margin-bottom: 5px;
+}
