@@ -7,7 +7,7 @@ import Card from "./Card";
 
 const Game: React.FC = () => {
 	const get = useGet();
-	const sessionId = useLocation<number>().state;
+	const sessionId = useLocation().state as number;
 	const [state, setState] = useState<SinglePlayerGameState>(null);
 
 	useEffect(() => {

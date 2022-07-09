@@ -1,7 +1,7 @@
 import { UserContext } from 'context';
 import { unauthorizedPost } from 'network';
 import React, { FunctionComponent, useContext, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { Button, Input } from 'reactstrap';
 import { Player } from 'types/Player';
 
@@ -17,7 +17,7 @@ const Login: FunctionComponent<LoginProps> = ({ setPlayer }) => {
     unauthorizedPost<Player>({ endpoint: 'player/login', body: playerName }).then(setPlayer);
   };
 
-  return (playerId !== null && playerId !== undefined) ? <Redirect to={'/'} /> : (
+  return (playerId !== null && playerId !== undefined) ? <Navigate to="/" /> : (
     <div>
       <h1>Enter your name</h1>
       <Input

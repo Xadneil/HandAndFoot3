@@ -1,11 +1,11 @@
 import { websocket } from "network";
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Wait: React.FC = () => {
   const [numPlayers, setNumPlayers] = useState(0);
-  const sessionId = useLocation<number>().state;
-  const history = useHistory();
+  const sessionId = useLocation().state as number;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const ws = websocket(`wait/WaitForGameStart/${sessionId}`);
@@ -19,7 +19,7 @@ const Wait: React.FC = () => {
     const closeHandler = (e: CloseEvent) => {
       closed = true;
       if (e.reason === 'Start')
-        history.push('/game', sessionId);
+        navigate('/game', { state: sessionId });
       else if (e.reason)
         alert(e.reason);
     };
@@ -33,13 +33,13 @@ const Wait: React.FC = () => {
         ws.close();
       }
     };
-  }, [sessionId, history]);
+  }, [sessionId, navigate]);
 
   return (
     <div>
       <p>Waiting for players to join.</p>
       {numPlayers > 0 ? <p>{numPlayers} out of 4 currently waiting.</p> : null}
-      <button onClick={() => history.push('/game', sessionId)}>Force game entry</button>
+      <button onClick={() => navigate('/game', { state: sessionId })}>Force game entry</button>
     </div>
   )
 };

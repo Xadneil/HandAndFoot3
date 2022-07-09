@@ -1,28 +1,26 @@
 import { useGet, usePost } from "network";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "reactstrap";
 import './Sessions.css';
 
 const Sessions: React.FC = () => {
   const post = usePost();
   const get = useGet();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [sessions, setSessions] = useState<Session[]>([]);
 
-  const refresh = () => {
+  useEffect(() => {
     get<Session[]>('session/JoinableSessions').then(setSessions);
-  };
-
-  useEffect(refresh, []);
+  }, [get]);
 
   const waitOrStart = ({ task, sessionId }: SessionResponse) => {
     if (task === 'Wait') {
-      history.push('/wait', sessionId);
+      navigate('/wait', { state: sessionId });
     }
     else if (task === 'Start') {
-      history.push('/game', sessionId);
+      navigate('/game', { state: sessionId });
     }
   };
 
