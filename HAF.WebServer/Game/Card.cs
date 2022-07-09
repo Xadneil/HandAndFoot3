@@ -2,20 +2,14 @@
 
 namespace HAF.WebServer.Game
 {
-    public struct Card
+    public class Card
     {
-        public readonly Rank Rank;
-        public readonly Suit Suit;
+        public Rank Rank { get; private set; }
+        public Suit Suit { get; private set; }
 
         public Card(Rank r, Suit s)
         {
             Rank = r;
-            Suit = s;
-        }
-
-        public Card(string r, Suit s)
-        {
-            Rank = RankUtils.GetRank(r);
             Suit = s;
         }
 
@@ -35,28 +29,6 @@ namespace HAF.WebServer.Game
                 Rank.NINE or Rank.TEN or Rank.JACK or Rank.QUEEN or Rank.KING => 10,
                 _ => throw new InvalidOperationException($"The rank {Rank} is not valid."),
             };
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null || obj is not Card other)
-                return false;
-            return Suit == other.Suit && Rank == other.Rank;
-        }
-
-        public override int GetHashCode()
-        {
-            return 37 * Suit.GetHashCode() + Rank.GetHashCode();
-        }
-
-        public static bool operator ==(Card left, Card right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Card left, Card right)
-        {
-            return !(left == right);
         }
     }
 }

@@ -1,17 +1,18 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HAF.WebServer.Game
 {
     public class CardHolder
     {
-        public Hand Hand { get; private set; }
-        public Hand Foot { get; private set; }
+        public List<Card> Hand { get; private set; }
+        public List<Card> Foot { get; private set; }
 
         public CardHolder()
         {
         }
 
-        public Hand CurrentHand
+        public List<Card> CurrentHand
         {
             get
             {
@@ -27,7 +28,7 @@ namespace HAF.WebServer.Game
             }
         }
 
-        public void DealCards(Hand hand, Hand foot)
+        public void DealCards(List<Card> hand, List<Card> foot)
         {
             Hand = hand;
             Foot = foot;

@@ -5,3 +5,8 @@ type Session = {
   lastUpdated: Date;
   numberOfPlayers: number;
 };
+
+type SessionResponse = {
+  sessionId: number;
+  task: 'Wait' | 'Start';
+}

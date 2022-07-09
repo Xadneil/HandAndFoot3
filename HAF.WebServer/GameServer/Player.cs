@@ -11,6 +11,9 @@ namespace HAF.WebServer.GameServer
 
         public string Name { get; private set; }
         public int PlayerId { get; private set; }
+        public int SessionId { get; set; }
+        public int TeamIndex { get; set; }
+        public int PlayerIndex { get; set; }
         public string Secret { get; private set; }
 
         public Player(string name, int playerId)

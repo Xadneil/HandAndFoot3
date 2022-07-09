@@ -8,7 +8,7 @@ namespace HAF.WebServer.Game
     {
         public readonly Team[] Teams;
         public List<Card> DrawPile, DiscardPile;
-        public int Round;
+        public int Round, Team, Player;
         public int[] TeamPoints;
         private readonly int cardsPerHand;
         private readonly int decks;
@@ -46,7 +46,7 @@ namespace HAF.WebServer.Game
 
             foreach (CardHolder player in Teams.SelectMany(t => t.CardHolders))
             {
-                player.DealCards(new Hand(DrawPile, cardsPerHand), new Hand(DrawPile, cardsPerHand));
+                player.DealCards(Hand.CreateHand(DrawPile, cardsPerHand), Hand.CreateHand(DrawPile, cardsPerHand));
             }
         }
 
@@ -86,7 +86,7 @@ namespace HAF.WebServer.Game
 
             foreach (CardHolder player in Teams.SelectMany(t => t.CardHolders))
             {
-                player.DealCards(new Hand(DrawPile, cardsPerHand), new Hand(DrawPile, cardsPerHand));
+                player.DealCards(Hand.CreateHand(DrawPile, cardsPerHand), Hand.CreateHand(DrawPile, cardsPerHand));
             }
 
             foreach (Team team in Teams)

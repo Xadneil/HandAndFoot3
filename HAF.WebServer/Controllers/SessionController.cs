@@ -1,8 +1,6 @@
 ﻿using HAF.WebServer.GameServer;
 using HAF.WebServer.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,11 +27,31 @@ namespace HAF.WebServer.Controllers
         }
 
         [HttpPost("[action]")]
-        public int CreateSession([FromBody] SessionCreateModel model)
+        public async Task<SessionResponseModel> CreateSessionAsync([FromBody] SessionCreateModel model)
         {
             var session = store.CreateNewGameSession(model.SessionName, model.Password);
-            session.Players.Add(User.GetPlayer(playerStore));
-            return session.SessionId;
+            try
+            {
+                await session.Semaphore.WaitAsync();
+                session.AddPlayer(User.GetPlayer(playerStore));
+            }
+            finally { session.Semaphore.Release(); }
+            return new SessionResponseModel(session.SessionId, "Wait");
+        }
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult<SessionResponseModel>> JoinSessionAsync([FromBody] int sessionId)
+        {
+            var session = store.GetSession(sessionId);
+            try
+            {
+                await session.Semaphore.WaitAsync();
+                if (session == null || session.Players.Count >= 4)
+                    return BadRequest();
+                session.AddPlayer(User.GetPlayer(playerStore));
+                return new SessionResponseModel(sessionId, session.Players.Count == 4 ? "Start" : "Wait");
+            }
+            finally { session.Semaphore.Release(); }
         }
 
         [HttpGet("[action]/{sessionId}")]
@@ -43,16 +61,6 @@ namespace HAF.WebServer.Controllers
             if (session == null)
                 return NotFound();
             return new SessionModel(session);
-        }
-
-        [HttpPost("[action]")]
-        public ActionResult JoinSession([FromBody] int sessionId)
-        {
-            var session = store.GetSession(sessionId);
-            if (session == null)
-                return BadRequest();
-            session.Players.Add(User.GetPlayer(playerStore));
-            return Ok();
         }
     }
 }

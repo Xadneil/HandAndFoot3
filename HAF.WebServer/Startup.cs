@@ -2,9 +2,6 @@ using HAF.WebServer.GameServer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,6 +31,7 @@ namespace HAF.WebServer
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = PlayerIdAndSecretAuthenticationHandler.authenticationScheme;
+                options.DefaultChallengeScheme = PlayerIdAndSecretAuthenticationHandler.authenticationScheme;
                 options.AddScheme<PlayerIdAndSecretAuthenticationHandler>(PlayerIdAndSecretAuthenticationHandler.authenticationScheme, "Player ID and Secret");
             });
 
@@ -64,6 +62,8 @@ namespace HAF.WebServer
                 p.AllowAnyHeader();
                 p.AllowAnyMethod();
             });
+
+            app.UseWebSockets();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

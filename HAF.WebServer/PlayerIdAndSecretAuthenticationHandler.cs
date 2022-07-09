@@ -11,6 +11,8 @@ namespace HAF.WebServer
         public const string authenticationScheme = "PlayerIdAndSecretHeaders";
         private readonly PlayerStore playerStore;
         private IHeaderDictionary headers;
+        private bool isWebSocket;
+        private HttpResponse response;
 
         public PlayerIdAndSecretAuthenticationHandler(PlayerStore playerStore)
         {
@@ -19,7 +21,11 @@ namespace HAF.WebServer
 
         public Task<AuthenticateResult> AuthenticateAsync()
         {
-            if (this.headers == null)
+            if (isWebSocket)
+            {
+                return Task.FromResult(AuthenticateResult.Fail("WebSockets cannot authenticate."));
+            }
+            if (headers == null)
                 return Task.FromResult(AuthenticateResult.Fail("No Headers"));
 
             string getHeader(string name)
@@ -58,7 +64,8 @@ namespace HAF.WebServer
 
         public Task ChallengeAsync(AuthenticationProperties properties)
         {
-            throw new System.NotImplementedException();
+            response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
         }
 
         public Task ForbidAsync(AuthenticationProperties properties)
@@ -69,6 +76,8 @@ namespace HAF.WebServer
         public Task InitializeAsync(AuthenticationScheme scheme, HttpContext context)
         {
             headers = context.Request.Headers;
+            isWebSocket = context.WebSockets.IsWebSocketRequest;
+            response = context.Response;
             return Task.CompletedTask;
         }
     }

@@ -1,20 +1,19 @@
 import './custom.css';
 import React, { useEffect, useState } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './components/Login';
 import { defaultUserContext, IUserContext, UserContext } from 'context';
 import Sessions from 'components/Sessions';
 import { Player } from 'types/Player';
+import Wait from 'components/Wait';
+import Game from 'components/Game';
 
 const initialUserContext: IUserContext = JSON.parse(localStorage.getItem('userContext')) || defaultUserContext;
 
 const App = () => {
   const [contextValue, setContextValue] = useState(initialUserContext);
-
-  // const setContextProperty = (property: keyof IUserContext) => (value: any) => {
-  //   setContextValue({ ...contextValue, [property]: value });
-  // };
+  const location = useLocation();
 
   const setPlayer = (player: Player) => {
     setContextValue({ ...contextValue, ...player });
@@ -23,6 +22,12 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem('userContext', JSON.stringify(contextValue));
   }, [contextValue])
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      setContextValue(JSON.parse(localStorage.getItem('userContext')) || defaultUserContext);
+    }
+  }, [location]);
 
   return (
     <UserContext.Provider value={contextValue}>
@@ -33,6 +38,8 @@ const App = () => {
               <Redirect to={'/sessions'} />
             </Route>
             <Route path='/sessions' component={Sessions} />
+            <Route path='/wait' component={Wait} />
+            <Route path='/game' component={Game} />
           </>
           :
           <Login
