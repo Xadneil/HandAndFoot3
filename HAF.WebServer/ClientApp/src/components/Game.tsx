@@ -1,5 +1,5 @@
 import './Game.css';
-import { useGet } from "network";
+import { useGet } from "utils/network";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SinglePlayerGameState } from "types/SinglePlayerGameState";

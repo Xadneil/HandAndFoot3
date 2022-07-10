@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Navigate, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './components/Login';
-import { defaultUserContext, IUserContext, UserContext } from 'context';
+import { defaultUserContext, IUserContext, UserContext } from 'utils/context';
 import Sessions from 'components/Sessions';
 import { Player } from 'types/Player';
 import Wait from 'components/Wait';

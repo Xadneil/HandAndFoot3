@@ -1,4 +1,4 @@
-import { useGet, usePost } from "network";
+import { useGet, usePost } from "utils/network";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "reactstrap";

@@ -1,5 +1,5 @@
-import { UserContext } from 'context';
-import { unauthorizedPost } from 'network';
+import { UserContext } from 'utils/context';
+import { unauthorizedPost } from 'utils/network';
 import React, { FunctionComponent, useContext, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Button, Input } from 'reactstrap';
