@@ -26,7 +26,7 @@ const Game: React.FC = () => {
 
 	return (
 		<div className="currentHand">
-			{state && state.cardHolder.currentHand.map((c, i) => <Card key={i} card={c} />)}
+			{state && state.cardHolder.currentHand.map((c, i) => <div key={i} className='card-container'><Card className="haf-card" card={c} /></div>)}
 		</div>
 	)
 };
