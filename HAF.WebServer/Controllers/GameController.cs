@@ -25,13 +25,11 @@ namespace HAF.WebServer.Controllers
             var session = sessionStore.GetSession(sessionId);
             if (session == null)
                 return BadRequest();
-            try
+            using (await session.LockAsync())
             {
-                await session.Semaphore.WaitAsync();
                 if (session.Game == null)
                     session.Game = new HandAndFootGame();
             }
-            finally { session.Semaphore.Release(); }
             var player = User.GetPlayer(playerStore);
 
             return new SinglePlayerGameState(session.Game, player);

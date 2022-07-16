@@ -30,12 +30,10 @@ namespace HAF.WebServer.Controllers
         public async Task<SessionResponseModel> CreateSessionAsync([FromBody] SessionCreateModel model)
         {
             var session = store.CreateNewGameSession(model.SessionName, model.Password);
-            try
+            using (await session.LockAsync())
             {
-                await session.Semaphore.WaitAsync();
                 session.AddPlayer(User.GetPlayer(playerStore));
             }
-            finally { session.Semaphore.Release(); }
             return new SessionResponseModel(session.SessionId, "Wait");
         }
 
@@ -43,15 +41,15 @@ namespace HAF.WebServer.Controllers
         public async Task<ActionResult<SessionResponseModel>> JoinSessionAsync([FromBody] int sessionId)
         {
             var session = store.GetSession(sessionId);
-            try
+            if (session == null)
+                return BadRequest();
+            using (await session.LockAsync())
             {
-                await session.Semaphore.WaitAsync();
-                if (session == null || session.Players.Count >= 4)
+                if (session.Players.Count >= 4)
                     return BadRequest();
                 session.AddPlayer(User.GetPlayer(playerStore));
                 return new SessionResponseModel(sessionId, session.Players.Count == 4 ? "Start" : "Wait");
             }
-            finally { session.Semaphore.Release(); }
         }
 
         [HttpGet("[action]/{sessionId}")]
