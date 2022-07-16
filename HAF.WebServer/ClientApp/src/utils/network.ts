@@ -12,7 +12,9 @@ interface PostParams extends GetParams {
   body: any;
 }
 
-const serverURLBase = 'https://localhost:44352/api/';
+export const serverUrl = 'https://localhost:44352/';
+
+const serverURLBase = serverUrl + 'api/';
 
 const responseHandler = (navigate?: NavigateFunction) => (response: Response) => {
   if (navigate && !response.ok && response.status === 401) {
