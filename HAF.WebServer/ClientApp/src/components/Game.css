@@ -8,6 +8,12 @@
   flex: 1;
 }
 
+.buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
 .currentHand {
   display: flex;
   width: 100%;

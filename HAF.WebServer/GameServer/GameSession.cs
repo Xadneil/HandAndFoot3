@@ -35,6 +35,8 @@ namespace HAF.WebServer.GameServer
 
         public void AddPlayer(Player p)
         {
+            if (p == null)
+                throw new ArgumentNullException(nameof(p));
             if (semaphore.CurrentCount != 0)
                 throw new SynchronizationLockException($"{nameof(semaphore)} must be locked to call AddPlayer.");
             if (players.Contains(p))

@@ -9,7 +9,7 @@ interface GetParams {
 }
 
 interface PostParams extends GetParams {
-  body: any;
+  body?: any;
 }
 
 export const serverUrl = 'https://localhost:44352/';

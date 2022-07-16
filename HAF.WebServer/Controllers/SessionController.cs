@@ -12,12 +12,10 @@ namespace HAF.WebServer.Controllers
     public class SessionController : ControllerBase
     {
         private readonly SessionStore store;
-        private readonly PlayerStore playerStore;
 
-        public SessionController(SessionStore store, PlayerStore playerStore)
+        public SessionController(SessionStore store)
         {
             this.store = store;
-            this.playerStore = playerStore;
         }
 
         [HttpGet("[action]")]
@@ -32,7 +30,7 @@ namespace HAF.WebServer.Controllers
             var session = store.CreateNewGameSession(model.SessionName, model.Password);
             using (await session.LockAsync())
             {
-                session.AddPlayer(User.GetPlayer(playerStore));
+                session.AddPlayer(HttpContext.GetPlayer());
             }
             return new SessionResponseModel(session.SessionId, "Wait");
         }
@@ -47,18 +45,9 @@ namespace HAF.WebServer.Controllers
             {
                 if (session.Players.Count >= 4)
                     return BadRequest();
-                session.AddPlayer(User.GetPlayer(playerStore));
+                session.AddPlayer(HttpContext.GetPlayer());
                 return new SessionResponseModel(sessionId, session.Players.Count == 4 ? "Start" : "Wait");
             }
-        }
-
-        [HttpGet("[action]/{sessionId}")]
-        public ActionResult<SessionModel> GetSession(int sessionId)
-        {
-            var session = store.GetSession(sessionId);
-            if (session == null)
-                return NotFound();
-            return new SessionModel(session);
         }
     }
 }

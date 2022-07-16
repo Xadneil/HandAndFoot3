@@ -10,19 +10,10 @@ namespace HAF.WebServer.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
-        private readonly PlayerStore playerStore;
-        private readonly SessionStore sessionStore;
-
-        public GameController(PlayerStore playerStore, SessionStore sessionStore)
+        [HttpGet("[action]")]
+        public async Task<ActionResult<SinglePlayerGameState>> InitAsync()
         {
-            this.playerStore = playerStore;
-            this.sessionStore = sessionStore;
-        }
-
-        [HttpGet("[action]/{sessionId}")]
-        public async Task<ActionResult<SinglePlayerGameState>> InitAsync(int sessionId)
-        {
-            var session = sessionStore.GetSession(sessionId);
+            var session = HttpContext.GetSession();
             if (session == null)
                 return BadRequest();
             using (await session.LockAsync())
@@ -30,9 +21,21 @@ namespace HAF.WebServer.Controllers
                 if (session.Game == null)
                     session.Game = new HandAndFootGame();
             }
-            var player = User.GetPlayer(playerStore);
 
-            return new SinglePlayerGameState(session.Game, player);
+            return new SinglePlayerGameState(session.Game, HttpContext.GetPlayer());
+        }
+
+        [HttpPost("[action]")]
+        [TypeFilter(typeof(CurrentTurnValidator))]
+        public ActionResult<SinglePlayerGameState> Draw()
+        {
+            var session = HttpContext.GetSession();
+            if (session == null)
+                return BadRequest();
+            if (session.Game.PlayerHasDrawn)
+                return BadRequest("Player has already drawn");
+            session.Game.DrawTwoCards();
+            return new SinglePlayerGameState(session.Game, HttpContext.GetPlayer());
         }
     }
 }

@@ -8,10 +8,28 @@ namespace HAF.WebServer.Game
     {
         public readonly Team[] Teams;
         public List<Card> DrawPile, DiscardPile;
-        public int Round, Team, Player;
+        public int Round, Team;
         public int[] TeamPoints;
         private readonly int cardsPerHand;
         private readonly int decks;
+
+        private int player;
+        public int Player
+        {
+            get => player;
+            set
+            {
+                if (value == player)
+                    return;
+                if (!PlayerHasDiscarded)
+                    throw new InvalidOperationException("Cannot change current player if player has not discarded.");
+                player = value;
+                PlayerHasDrawn = false;
+                PlayerHasDiscarded = false;
+            }
+        }
+        public bool PlayerHasDrawn;
+        public bool PlayerHasDiscarded;
 
         public HandAndFootGame(int teams = 2, int playersPerTeam = 2, int cardsPerHand = 11, int decks = 5)
         {
@@ -112,8 +130,10 @@ namespace HAF.WebServer.Game
             team.Books.Add(book);
         }
 
-        public Card[] DrawTwoCards(CardHolder player)
+        public Card[] DrawTwoCards()
         {
+            if (PlayerHasDrawn)
+                throw new InvalidOperationException("Player has already drawn.");
             Card[] ret = new Card[2];
             for (int i = 0; i < 2; i++)
             {
@@ -132,9 +152,10 @@ namespace HAF.WebServer.Game
                 }
                 var card = DrawPile[^1];
                 DrawPile.RemoveAt(DrawPile.Count - 1);
-                player.CurrentHand.Add(card);
+                Teams[Team].CardHolders[player].CurrentHand.Add(card);
                 ret[i] = card;
             }
+            PlayerHasDrawn = true;
             return ret;
         }
 

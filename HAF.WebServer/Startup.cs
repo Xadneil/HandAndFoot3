@@ -35,6 +35,12 @@ namespace HAF.WebServer
                 options.AddScheme<PlayerIdAndSecretAuthenticationHandler>(PlayerIdAndSecretAuthenticationHandler.authenticationScheme, "Player ID and Secret");
             });
 
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<GameSessionFilter>();
+                options.Filters.Add<PlayerFilter>();
+            });
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
