@@ -6,7 +6,7 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
   return (
     <>
       <NavMenu />
-      <Container>
+      <Container style={{ flex: 1 }}>
         {children}
       </Container>
     </>

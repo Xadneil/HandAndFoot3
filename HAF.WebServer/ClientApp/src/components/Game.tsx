@@ -24,10 +24,12 @@ const Game: React.FC = () => {
 		return () => abortHandler.abort();
 	}, [sessionId, get, state])
 
-	return (
+	return (<div className='game'>
+		<div className='game-area'></div>
 		<div className="currentHand">
 			{state && state.cardHolder.currentHand.map((c, i) => <div key={i} className='card-container'><Card className="haf-card" card={c} /></div>)}
 		</div>
+	</div>
 	)
 };
 

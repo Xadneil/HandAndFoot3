@@ -1,3 +1,13 @@
+.game {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.game-area {
+  flex: 1;
+}
+
 .currentHand {
   display: flex;
   width: 100%;
