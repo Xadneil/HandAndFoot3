@@ -1,6 +1,6 @@
 import './custom.css';
 import React, { useEffect, useState } from 'react';
-import { Route, Navigate, useLocation } from 'react-router-dom';
+import { Route, Navigate, useLocation, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './components/Login';
 import { defaultUserContext, IUserContext, UserContext } from 'utils/context';
@@ -33,14 +33,12 @@ const App = () => {
     <UserContext.Provider value={contextValue}>
       <Layout>
         {(contextValue.playerId !== null && contextValue.playerId !== undefined) ?
-          <>
-            <Route path='/'>
-              <Navigate to="/sessions" />
-            </Route>
+          <Routes>
+            <Route path='/' element={<Navigate to="/sessions" />} />
             <Route path='/sessions' element={<Sessions />} />
-            <Route path='/wait' element={<Wait />} />
-            <Route path='/game' element={<Game />} />
-          </>
+            <Route path='/wait/:sessionId' element={<Wait />} />
+            <Route path='/game/:sessionId' element={<Game />} />
+          </Routes>
           :
           <Login
             setPlayer={setPlayer}

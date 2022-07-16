@@ -17,10 +17,10 @@ const Sessions: React.FC = () => {
 
   const waitOrStart = ({ task, sessionId }: SessionResponse) => {
     if (task === 'Wait') {
-      navigate('/wait', { state: sessionId });
+      navigate(`/wait/${sessionId}`);
     }
     else if (task === 'Start') {
-      navigate('/game', { state: sessionId });
+      navigate(`/game/${sessionId}`);
     }
   };
 

@@ -1,13 +1,13 @@
 import './Game.css';
 import { useGet } from "utils/network";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { SinglePlayerGameState } from "types/SinglePlayerGameState";
 import Card from "./Card";
 
 const Game: React.FC = () => {
 	const get = useGet();
-	const sessionId = useLocation().state as number;
+	const { sessionId } = useParams();
 	const [state, setState] = useState<SinglePlayerGameState>(null);
 
 	useEffect(() => {
